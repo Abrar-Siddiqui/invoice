@@ -1,0 +1,5 @@
+.scroller {
+    width: 100%;
+    overflow-y: scroll;
+    scrollbar-color: rebeccapurple green;
+}
