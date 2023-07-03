@@ -6,16 +6,23 @@ import AddIcon from "../components/Icons/AddIcon.jsx";
 import DeleteIcon from "../components/Icons/DeleteIcon.jsx";
 import PencilIcon from "../components/Icons/PencilIcon.jsx";
 import Pagination from "../components/Layout/Pagination.jsx";
+import { TbSearch } from "react-icons/tb";
 import { datetimeFormatter } from "../lib/formatter.js";
 import { useIndexedDB } from "react-indexed-db";
 import { NoData } from "../styles/customerStyle.jsx";
 import { useGetUserDataQuery } from "../store/redux-toolkit/Slices/GetDataSlice.js";
 import "./Containers/Home/homeCustomer.css";
 import { useDeletePostMutation } from "../store/redux-toolkit/Slices/GetDataSlice.js";
+import { GrView } from "react-icons/gr";
 
 export default function Customers() {
   const { data, isLodding, refetch } = useGetUserDataQuery();
   const [deleteData, response] = useDeletePostMutation();
+
+  const container = "flex justify-between items-center mx-auto relative";
+  const inputField =
+    "w-[100%] focus:outline-none  border-[0px] border-black py-[2px] text-left px-3 text-[15px] rounded-lg  shadow-lg bg-slate-300";
+  const Seacrh = "  text-sky-600 text-xl px-5 rounded-sm shadow-lg ";
 
   const DeleteHandler = (id) => {
     deleteData(id).then(() => {
@@ -27,6 +34,10 @@ export default function Customers() {
   const [len, setLen] = useState();
 
   const [sorting, setSorting] = useState("name");
+  const [name, setName] = useState("");
+  const SubmitHandler = (e) => {
+    e.preventDefault();
+  };
 
   useEffect(() => {
     // const { indexId } = JSON.parse(localStorage.getItem("authUser"));
@@ -50,6 +61,7 @@ export default function Customers() {
       // );
     }
   }, [data]);
+  console.log(name);
 
   // console.log(new Intl.DateTimeFormat("en-US").format(data1.createdAt));
 
@@ -80,8 +92,24 @@ export default function Customers() {
 
   return (
     <div className="bg-slate-300 h-auto rounded-lg shadow-lg  shadow-slate-500 ">
-      <div className="flex mx-auto justify-between items-center px-5 text-xl md:text-[2.2rem]  py-6">
+      <div className="md:flex  mx-auto justify-between items-center px-5 text-xl md:text-[2.2rem]   py-6">
         <h4 className="text-xl md:text-[2.2rem] ">Customers</h4>
+        <div className="md:my-0 my-3">
+          <div className={container}>
+            <form onSubmit={SubmitHandler}>
+              <div className="flex mx-auto">
+                <input
+                  className={inputField}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Search by name.."
+                />
+                <button type="submit" className={Seacrh}>
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
         <Link
           to="/add-party/customer"
           className="button is-small has-icon is-primary w-max-content hover:bg-slate-500"
@@ -147,7 +175,7 @@ export default function Customers() {
 
       {/* -----------------------Add Customer Data----------------------- */}
       <div className="flex   justify-center place-content-center ">
-        <div className="my-4 bg-white shadow-2xl mt-[27px] shadow-slate-400 border-[2px]  border-dashed border-black rounded-lg w-[90%] ">
+        <div className="my-4 bg-white shadow-2xl mt-[27px] shadow-slate-400 border-[2px]  border-solid  rounded-lg w-[90%] ">
           {data1 && len > 0 ? (
             <>
               <div className="elevated">
@@ -162,9 +190,9 @@ export default function Customers() {
                     ]}
                   />
                 </div> */}
-                <div className="scroller md:h-[50vh] h-[34vh]">
+                <div className="scroller md:h-[70vh] h-[60vh]">
                   <table>
-                    <thead>
+                    <thead className="bg-black text-white ">
                       <tr>
                         <th>GSTIN_No</th>
                         <th>Name</th>
@@ -177,12 +205,13 @@ export default function Customers() {
                     <tbody className="scroller">
                       {data &&
                         data1.map((customer) => {
+                          let date1 = new Date(customer.createdAt);
                           return (
                             <tr key={customer.id}>
                               <td>{customer.gst_in_no}</td>
                               <td>{customer.party_name}</td>
                               <td>{customer.phone_no}</td>
-                              <td>{customer.createdAt}</td>
+                              <td>{date1.toLocaleDateString()}</td>
                               <td>
                                 <DropDownButton text="Actions">
                                   <button
@@ -190,11 +219,11 @@ export default function Customers() {
                                     className="button block-button is-small has-icon text-danger"
                                   >
                                     <DeleteIcon />
-                                    Delete
+                                    Del
                                   </button>
                                   <Link to={`/viewsingledata/${customer.id}`}>
                                     <button className="button block-button is-small has-icon">
-                                      View
+                                      <GrView /> View
                                     </button>
                                   </Link>
                                   <Link to={`/customerupdate/${customer.id}`}>

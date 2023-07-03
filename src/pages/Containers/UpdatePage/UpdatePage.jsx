@@ -1,153 +1,133 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useGetSingleDataQuery,
+  useUpdateDataMutation,
+} from "../../../store/redux-toolkit/Slices/GetDataSlice";
 
 const UpdatePage = () => {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [bank, setBank] = useState("");
+  const [ifsc, setIfsc] = useState("");
+  const [acname, setAcname] = useState("");
+  const [addess, setAddress] = useState("");
+  const [data1, setData1] = useState("");
   const params = useParams();
   const { id } = params;
-  console.log(id);
-  const [formData, setFormData] = useState({
-    partyname: "",
-    accountername: "",
-    mobileno: "",
-    acnumber: "",
-  });
-
-  const handleChange = (e) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [e.target.name]: e.target.value,
-    }));
+  const { data, isLoading, isFetching } = useGetSingleDataQuery(id);
+  const [updateData, response] = useUpdateDataMutation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isLoading || isFetching) {
+      console.log("Lodding data ?");
+    } else {
+      setData1(data.result);
+      setName(data.result.party_name);
+      setPhone(data.result.phone_no);
+      setAcname(data.result.ac_holder_name);
+      setBank(data.result.account_no);
+      setIfsc(data.result.ifsc_code);
+      setAddress(data.result.address);
+    }
+  }, [data]);
+  const values = {
+    id: id,
+    party_name: name,
+    phone_no: phone,
+    address: addess,
+    ifsc_code: ifsc,
+    ac_holder_name: acname,
+    account_no: bank,
   };
 
-  const handleSubmit = (e) => {
+  const SubmitHandler = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
+    updateData(values)
+      .then(() => {
+        navigate("/customers");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    console.log(values);
   };
-
   return (
-    <div className="w-[50%] mx-auto ">
-      <form
-        className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-        onSubmit={handleSubmit}
-      >
-        <div className="flex justify-between mx-auto gap-5">
-          <div className="mb-4 ">
-            <label
-              className="block text-gray-900 text-sm font-normal mb-2"
-              htmlFor="partyname"
-            >
-              Party Name
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-              id="partyname"
-              type="text"
-              name="partyname"
-              placeholder="Enter your Party Name"
-              value={formData.partyname}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              className="block text-gray-900 text-sm font-normal mb-2"
-              htmlFor="accountername"
-            >
-              Accounter Name
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-              id="accountername"
-              type="text"
-              name="accountername"
-              placeholder="Enter your Accounter Name"
-              value={formData.accountername}
-              onChange={handleChange}
-            />
-          </div>
+    <div className="flex dir-col g-1rem">
+      {/* <h4>Add {partyType === "customer" ? "Customer" : "Supplier"}</h4> */}
+      <div className="cards">
+        <div className="card">
+          <form onSubmit={SubmitHandler}>
+            <div className="flex ai-top g-1rem">
+              <div className="field flex-1 required">
+                <label htmlFor="name">Party name</label>
+                <input
+                  className="input"
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div className="field flex-1 required">
+                <label htmlFor="phone">Phone no</label>
+                <input
+                  className="input"
+                  type="text"
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="md:flex ai-top g-1rem">
+              <div className="field flex-1 required">
+                <label htmlFor="name">Bank A/C Number</label>
+                <input
+                  className="input"
+                  type="text"
+                  id="account"
+                  value={bank}
+                  onChange={(e) => setBank(e.target.value)}
+                />
+              </div>
+              <div className="field flex-1 required">
+                <label htmlFor="phone">IFSC No.</label>
+                <input
+                  className="input"
+                  type="text"
+                  id="ifsc"
+                  value={ifsc}
+                  onChange={(e) => setIfsc(e.target.value)}
+                />
+              </div>
+              <div className="field flex-1 required">
+                <label htmlFor="phone">Ac Holder Name</label>
+                <input
+                  className="input"
+                  type="text"
+                  id="acholname"
+                  value={acname}
+                  onChange={(e) => setAcname(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="field required">
+              <label htmlFor="address">Address</label>
+              <textarea
+                type="text"
+                id="address"
+                value={addess}
+                onChange={(e) => setAddress(e.target.value)}
+              ></textarea>
+            </div>
+            <button className="button block-button is-small is-primary">
+              Update
+            </button>
+          </form>
         </div>
-        <div className="flex justify-between mx-auto gap-5">
-          <div className="mb-4">
-            <label
-              className="block text-sm bg-white font-normal mb-2"
-              htmlFor="mobileno"
-            >
-              Mobile No.
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-              id="mobileno"
-              type="tel"
-              name="mobileno"
-              placeholder="Enter your Mobile No."
-              value={formData.mobileno}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="mb-6">
-            <label
-              className="block text-gray-900 text-sm font-normal mb-2"
-              htmlFor="acnumber"
-            >
-              A/C Number
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-              id="acnumber"
-              type="number"
-              name="acnumber"
-              placeholder="Enter your acnumber number"
-              value={formData.acnumber}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="flex justify-between mx-auto gap-5">
-          <div className="mb-4">
-            <label
-              className="block text-sm bg-white font-normal mb-2"
-              htmlFor="mobileno"
-            >
-              Ifsc Number
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-              id="mobileno"
-              type="tel"
-              name="mobileno"
-              placeholder="Enter your Mobile No."
-              value={formData.mobileno}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="mb-6">
-            <label
-              className="block text-gray-900 text-sm font-normal mb-2"
-              htmlFor="acnumber"
-            >
-              Address
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-              id="acnumber"
-              type="number"
-              name="acnumber"
-              placeholder="Enter your acnumber number"
-              value={formData.acnumber}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="flex items-center justify-between mx-auto">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-normal py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            Update
-          </button>
-        </div>
-      </form>
+      </div>
+      {/* <ToastContainer /> */}
     </div>
   );
 };

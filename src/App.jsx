@@ -25,6 +25,7 @@ import PdfViewer from "./pages/pdfViewer";
 import { BILLSHILL_URL } from "./constants.js";
 import SingleViewData from "./pages/Containers/SingleViewData/SingleViewData/";
 import UpdatePage from "./pages/Containers/UpdatePage/UpdatePage";
+import InvoiceForm from "./invoiceGenrator/components/InvoiceForm";
 
 initDB(DBConfig);
 
@@ -108,6 +109,7 @@ function App() {
           <Route path="inventory" element={<Inventory />} />
           <Route path="suppliers" element={<Suppliers />} />
           <Route path="customers" element={<Customers />} />
+          <Route path="invoicegenrator" element={<InvoiceForm />} />
 
           <Route path="viewsingledata/:id" element={<SingleViewData />} />
           <Route path="customerupdate/:id" element={<UpdatePage />} />

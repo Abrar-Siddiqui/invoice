@@ -139,14 +139,35 @@ export default function AddParty() {
       } else if (partyType === "supplier") {
         addSupplier(values)
           .unwrap()
+          .then(() =>
+            toast.success("Succesfully !", {
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            })
+          )
           .then(() => {
-            alert("Sucessfully Add Supplier");
-            navigate("/suppliers");
-            refetch;
+            setTimeout(() => {
+              navigate("/suppliers");
+            }, [4500]);
           })
-          .then((error) => {
-            console.log(error);
-          });
+          .catch((error) =>
+            toast.error("Error Please Check ?", {
+              position: "top-center",
+              autoClose: 4000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            })
+          );
       }
 
       setValue("name", "");
@@ -250,7 +271,7 @@ export default function AddParty() {
                 ) : null}
               </div>
               <div className="field flex-1 required">
-                <label htmlFor="phone">IFSC No.</label>
+                <label htmlFor="ifsc">IFSC No.</label>
                 <input
                   className="input"
                   type="text"
@@ -264,7 +285,7 @@ export default function AddParty() {
                 ) : null}
               </div>
               <div className="field flex-1 required">
-                <label htmlFor="phone">Ac Holder Name</label>
+                <label htmlFor="acholname">Ac Holder Name</label>
                 <input
                   className="input"
                   type="text"

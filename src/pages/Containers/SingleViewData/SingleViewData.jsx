@@ -58,8 +58,9 @@ const SingleViewData = () => {
                       <p className={grid1}>Party Name : {data1.party_name} </p>
                       <p className={grid1}>Phone No. : {data1.phone_no}</p>
                       <p className={grid1}>Bank A/c No. : {data1.account_no}</p>
-                      <p className={grid1}>
-                        Date and Time : {new Date(data.createdAt).toUTCString()}
+                      <p>
+                        Date and Time :{" "}
+                        {new Date(data1.createdAt).toUTCString()}
                       </p>
                     </div>
                   </div>

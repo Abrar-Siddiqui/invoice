@@ -76,7 +76,7 @@ export const {
   useGetSingleDataQuery,
   useAddNewPostDataMutation,
   useDeletePostMutation,
-  useUpdatePostMutation,
+  useUpdateDataMutation,
   useAddSupplierMutation,
   useGetALlSuplierQuery,
   useDeleteSuplierMutation,

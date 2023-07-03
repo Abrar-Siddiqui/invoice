@@ -10,6 +10,7 @@ import HomeContainer from "./Containers/Home/HomeContainers.jsx";
 import "../styles/Home.css";
 import SideSearchCustomer from "./Containers/Home/SideSearchCustomer.jsx";
 import CustomerGraph from "./Containers/Home/CustomerGraph.jsx";
+import { useGetUserDataQuery } from "../store/redux-toolkit/Slices/GetDataSlice.js";
 
 // const info = [
 //     { amount: 200, date: '01-02-2023' },
@@ -102,12 +103,14 @@ export default function Home() {
   const [data, setData] = useState();
   const [saleData, setSaleData] = useState("");
   const [purchaseData, setPurchaseData] = useState("");
+  const dates = ["2018-09-12", "2018-10-18", "2018-12-30"];
 
   useEffect(() => {
     const { indexId } = JSON.parse(localStorage.getItem("authUser"));
     const { getByID } = useIndexedDB("userData");
     getByID(indexId).then((userFromDB) => {
       setData(userFromDB);
+      console.log(userFromDB);
 
       setSaleData({
         year: {
@@ -176,6 +179,15 @@ export default function Home() {
               fill: false,
               borderColor: "#6750EFff",
               tension: 0.1,
+            },
+          ],
+        },
+        today: {
+          labels: ["2018-09-12", "2018-10-18", "2018-12-30"],
+          datasets: [
+            {
+              label: "today",
+              data: dates.filter((d) => new Date(d) - new Date() > 0),
             },
           ],
         },
@@ -250,30 +262,40 @@ export default function Home() {
             },
           ],
         },
+        today: {
+          labels: ["2018-09-12", "2018-10-18", "2018-12-30"],
+          datasets: [
+            {
+              label: "today",
+
+              data: dates.filter((d) => new Date(d) - new Date() > 0),
+            },
+          ],
+        },
       });
     });
   }, []);
 
   return (
-    <div className="bg-slate-300 p-5 rounded-md h-auto shadow-xl  shadow-slate-500 ">
+    <div className="h-auto rounded-md bg-slate-300 p-5 shadow-xl  shadow-slate-500 ">
       <div className="w-[100%]">
         <div>
           <HomeContainer />
         </div>
-        <div className="md:flex justify-between gap-4">
-          <div className="md:w-[70%] w-[100%]">
+        <div className="justify-between gap-4 md:flex">
+          <div className="w-[100%] md:w-[100%]">
             <div
-              //   style={{ display: "flex", gap: "1rem", paddingBottom: "2rem" }}
-              className=" md:flex  mx-auto gap-3 pb-1 "
+              // style={{ display: "flex", gap: "1rem", paddingBottom: "2px" }}
+              className=" mx-auto  gap-3 pb-1 md:flex "
             >
-              <div className="md:w-[49.5%] w-[100%] shadow-sm shadow-slate-600 bg-slate-100  md:p-5 p-5 mb-3 rounded-lg ">
+              <div className="mb-3 w-[100%] rounded-lg bg-slate-100 p-5  shadow-sm shadow-slate-600 md:w-[49.5%] md:p-5 ">
                 <div className="card__header   ">
                   <h3 className="section-title p-0">Sales</h3>
                   <DropDown
                     onChange={(value) => setSelectedSale(value)}
                     options={useMemo(() => {
                       return [
-                        // { text: 'Today', value: 'today' },
+                        { text: "Today", value: "today" },
                         { text: "Month", value: "month" },
                         { text: "Week", value: "week" },
                         { text: "Year", value: "year" },
@@ -286,14 +308,14 @@ export default function Home() {
                   <Line data={saleData[selectedSale]} options={options} />
                 )}
               </div>
-              <div className="md:w-[49.5%] w-[100%] shadow-sm shadow-slate-600 bg-slate-100  md:p-5 p-5 mb-3 rounded-lg ">
+              <div className="mb-3 w-[100%] rounded-lg bg-slate-100 p-5  shadow-sm shadow-slate-600 md:w-[49.5%]  md:p-5 ">
                 <div className="card__header">
                   <h3 className="section-title p-0">Purchases</h3>
                   <DropDown
                     onChange={(value) => setSelectedPurchase(value)}
                     options={useMemo(() => {
                       return [
-                        // { text: 'Today', value: 'today' },
+                        { text: "Today", value: "today" },
                         { text: "Month", value: "month" },
                         { text: "Week", value: "week" },
                         { text: "Year", value: "year" },
@@ -313,7 +335,7 @@ export default function Home() {
             {/* </Flex> */}
             {data && data.recent.length > 0 ? (
               <>
-                <div className="card w-100pc p-0 g-0">
+                <div className="card w-100pc g-0 p-0">
                   <h3 className="section-title p-1rem">Recent Invoices</h3>
                   <div className="table-container">
                     <table>
@@ -357,13 +379,10 @@ export default function Home() {
                 </div>
               </>
             ) : (
-              <div className="md:my-0 rounded-lg shadow-xl border-b-4 border-black my-3 bg-white py-3">
+              <div className="mb-3 rounded-lg border-b-4 border-black bg-white py-3 shadow-xl md:my-0">
                 <CustomerGraph />
               </div>
             )}
-          </div>
-          <div className="bg-white md:w-[30%] w-[100%] rounded-lg px-3 border-b-4 border-black md:my-0 my-2">
-            <SideSearchCustomer />
           </div>
         </div>
       </div>
